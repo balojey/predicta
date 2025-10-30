@@ -1,0 +1,316 @@
+{
+    "version": "0.1.0",
+    "name": "predicta",
+    "instructions": [
+        {
+            "name": "createMarket",
+            "accounts": [
+                {
+                    "name": "authority",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "marketAccount",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "registry",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "vaultAccount",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "teamA",
+                    "type": "string"
+                },
+                {
+                    "name": "teamB",
+                    "type": "string"
+                },
+                {
+                    "name": "endTime",
+                    "type": "i64"
+                }
+            ]
+        },
+        {
+            "name": "createMarketFromApi",
+            "accounts": [
+                {
+                    "name": "authority",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "marketAccount",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "registry",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "teamA",
+                    "type": "string"
+                },
+                {
+                    "name": "teamB",
+                    "type": "string"
+                },
+                {
+                    "name": "league",
+                    "type": "string"
+                },
+                {
+                    "name": "startTime",
+                    "type": "i64"
+                },
+                {
+                    "name": "endTime",
+                    "type": "i64"
+                },
+                {
+                    "name": "matchId",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "getMarketsForAuthority",
+            "accounts": [
+                {
+                    "name": "authority",
+                    "isMut": false,
+                    "isSigner": true
+                },
+                {
+                    "name": "registry",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "placePrediction",
+            "accounts": [
+                {
+                    "name": "predictor",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "marketAccount",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "vaultAccount",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "side",
+                    "type": "u8"
+                },
+                {
+                    "name": "amount",
+                    "type": "u64"
+                }
+            ]
+        }
+    ],
+    "accounts": [
+        {
+            "name": "MarketAccount",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "authority",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "teamA",
+                        "type": "string"
+                    },
+                    {
+                        "name": "teamB",
+                        "type": "string"
+                    },
+                    {
+                        "name": "league",
+                        "type": "string"
+                    },
+                    {
+                        "name": "matchId",
+                        "type": "string"
+                    },
+                    {
+                        "name": "startTime",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "endTime",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "resolved",
+                        "type": "bool"
+                    },
+                    {
+                        "name": "winner",
+                        "type": "u8"
+                    },
+                    {
+                        "name": "totalYes",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "totalNo",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "RegistryAccount",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "authority",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "markets",
+                        "type": {
+                            "vec": "publicKey"
+                        }
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        }
+    ],
+    "events": [
+        {
+            "name": "PredictionPlaced",
+            "fields": [
+                {
+                    "name": "market",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "predictor",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "side",
+                    "type": "u8",
+                    "index": false
+                },
+                {
+                    "name": "amount",
+                    "type": "u64",
+                    "index": false
+                }
+            ]
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "name": "EmptyTeamName",
+            "msg": "Team name cannot be empty"
+        },
+        {
+            "code": 6001,
+            "name": "TeamNameTooLong",
+            "msg": "Team name must be <= 32 bytes when used as a PDA seed"
+        },
+        {
+            "code": 6002,
+            "name": "EndTimeMustBeInFuture",
+            "msg": "End time must be in the future"
+        },
+        {
+            "code": 6003,
+            "name": "RegistryFull",
+            "msg": "Registry for this authority is full"
+        },
+        {
+            "code": 6004,
+            "name": "RegistryAuthorityMismatch",
+            "msg": "Registry authority mismatch"
+        },
+        {
+            "code": 6005,
+            "name": "MarketAlreadyRegistered",
+            "msg": "Market pubkey already registered in this registry"
+        },
+        {
+            "code": 6006,
+            "name": "MatchIdTooLong",
+            "msg": "Match ID must be <= 32 bytes (required for PDA seed)"
+        },
+        {
+            "code": 6007,
+            "name": "MarketAlreadyResolved",
+            "msg": "Market has already been resolved"
+        },
+        {
+            "code": 6008,
+            "name": "MarketClosed",
+            "msg": "Market is closed"
+        },
+        {
+            "code": 6009,
+            "name": "InvalidSide",
+            "msg": "Invalid prediction side"
+        },
+        {
+            "code": 6010,
+            "name": "InvalidAmount",
+            "msg": "Invalid prediction amount"
+        }
+    ]
+}
